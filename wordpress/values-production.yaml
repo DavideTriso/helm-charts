@@ -1,0 +1,131 @@
+# Example production values for WordPress Helm chart
+# Copy this file and customize for your needs
+
+## WordPress configuration
+wordpress:
+  config:
+    ## Update this to match your actual domain
+    siteUrl: "https://myblog.example.com"
+    
+    ## Custom WordPress configuration
+    extraConfig: |
+      define('WP_CACHE', true);
+      define('DISALLOW_FILE_EDIT', true);
+      define('MEDIA_TRASH', true);
+      define('WP_POST_REVISIONS', 10);
+      define('WP_MEMORY_LIMIT', '256M');
+      define('WP_MAX_MEMORY_LIMIT', '512M');
+      
+      ## Force HTTPS
+      define('FORCE_SSL_ADMIN', true);
+      if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+        $_SERVER['HTTPS'] = 'on';
+      }
+  
+  ## Increase storage for larger sites
+  persistence:
+    enabled: true
+    size: 20Gi
+  
+  ## Adjust resources based on traffic
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "250m"
+    limits:
+      memory: "1Gi"
+      cpu: "1000m"
+
+## Nginx configuration
+nginx:
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "300m"
+
+## MySQL configuration
+mysql:
+  enabled: true
+  
+  auth:
+    ## IMPORTANT: Generate secure passwords!
+    ## Example: openssl rand -base64 32
+    rootPassword: "CHANGE-ME-TO-SECURE-PASSWORD"
+    database: "wordpress_prod"
+    username: "wp_user"
+    password: "CHANGE-ME-TO-SECURE-PASSWORD"
+  
+  ## Increase storage for larger databases
+  persistence:
+    enabled: true
+    size: 20Gi
+  
+  ## Production-ready resources
+  resources:
+    requests:
+      memory: "512Mi"
+      cpu: "250m"
+    limits:
+      memory: "1Gi"
+      cpu: "1000m"
+
+## Scale WordPress pods based on traffic
+replicaCount: 2
+
+## Ingress configuration
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+    ## Limit request body size for uploads
+    nginx.ingress.kubernetes.io/proxy-body-size: "128m"
+    ## Rate limiting (optional)
+    # nginx.ingress.kubernetes.io/limit-rps: "10"
+  hosts:
+    - host: myblog.example.com
+      paths:
+        - path: /
+          pathType: Prefix
+  tls:
+    - secretName: myblog-example-com-tls
+      hosts:
+        - myblog.example.com
+
+## Enable horizontal pod autoscaling
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 10
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
+
+## Node selector for dedicated nodes (optional)
+# nodeSelector:
+#   workload: wordpress
+
+## Tolerations for taints (optional)
+# tolerations:
+#   - key: "workload"
+#     operator: "Equal"
+#     value: "wordpress"
+#     effect: "NoSchedule"
+
+## Pod anti-affinity for high availability
+affinity:
+  podAntiAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 100
+        podAffinityTerm:
+          labelSelector:
+            matchExpressions:
+              - key: app.kubernetes.io/name
+                operator: In
+                values:
+                  - wordpress
+          topologyKey: kubernetes.io/hostname

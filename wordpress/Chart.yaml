@@ -1,0 +1,29 @@
+apiVersion: v2
+name: wordpress
+description: A Helm chart for WordPress with PHP-FPM, Nginx, and MySQL
+
+type: application
+
+version: 1.0.0
+
+appVersion: "6.7"
+
+keywords:
+  - wordpress
+  - blog
+  - cms
+  - php
+  - nginx
+  - mysql
+
+maintainers:
+  - name: WordPress Helm Chart
+    url: https://github.com/DavideTriso/wordpress-helm
+
+sources:
+  - https://github.com/DavideTriso/wordpress-helm
+  - https://github.com/docker-library/wordpress
+  - https://github.com/docker-library/mysql
+
+home: https://wordpress.org/
+icon: https://s.w.org/style/images/about/WordPress-logotype-wmark.png
