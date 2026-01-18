@@ -73,13 +73,17 @@ mysql:
   
   ## MySQL authentication
   auth:
-    ## Root password (change in production!)
+    ## Root password
+    ## WARNING: Change this in production! Use a strong, randomly generated password.
+    ## Generate with: openssl rand -base64 32
     rootPassword: "changeme"
     ## WordPress database name
     database: "wordpress"
     ## WordPress database user
     username: "wordpress"
-    ## WordPress database password (change in production!)
+    ## WordPress database password
+    ## WARNING: Change this in production! Use a strong, randomly generated password.
+    ## Generate with: openssl rand -base64 32
     password: "wordpress"
   
   ## MySQL persistent storage
@@ -107,6 +111,8 @@ mysql:
 
 ## External MySQL configuration
 ## Used when mysql.enabled is false
+## WARNING: These default values are for development only. 
+## In production, update these with your actual database credentials.
 externalDatabase:
   host: "mysql.default.svc.cluster.local"
   port: 3306

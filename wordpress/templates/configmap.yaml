@@ -1,5 +1,8 @@
 ---
 # ConfigMap for WP-CLI script
+# NOTE: WP-CLI is downloaded on-demand from the official WordPress repository.
+# This is the recommended approach per WordPress documentation.
+# Alternative: Build a custom image with WP-CLI pre-installed.
 apiVersion: v1
 kind: ConfigMap
 metadata:

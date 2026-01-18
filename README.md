@@ -29,6 +29,43 @@ A production-ready Helm chart for deploying WordPress on Kubernetes with PHP-FPM
 
 ## Installation
 
+### ⚠️ Important Security Notice
+
+**Before deploying to production**, you MUST change the default passwords in `values.yaml`:
+
+```yaml
+mysql:
+  auth:
+    rootPassword: "changeme"  # ← Change this!
+    password: "wordpress"      # ← Change this!
+```
+
+The default passwords are intentionally weak for development/testing purposes only. For production:
+
+1. Generate strong, random passwords:
+   ```bash
+   # Example using openssl
+   ROOT_PASS=$(openssl rand -base64 32)
+   DB_PASS=$(openssl rand -base64 32)
+   ```
+
+2. Create a values file with secure passwords:
+   ```bash
+   cat > secure-values.yaml << EOF
+   mysql:
+     auth:
+       rootPassword: "$ROOT_PASS"
+       password: "$DB_PASS"
+   EOF
+   ```
+
+3. Install using the secure values:
+   ```bash
+   helm install my-wordpress ./wordpress -f secure-values.yaml
+   ```
+
+Alternatively, use Kubernetes Secrets to manage passwords separately.
+
 ### Quick Start
 
 Install with default values:
