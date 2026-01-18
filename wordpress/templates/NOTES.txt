@@ -1,0 +1,72 @@
+Thank you for installing {{ .Chart.Name }}!
+
+Your release is named {{ .Release.Name }}.
+
+To learn more about the release, try:
+
+  $ helm status {{ .Release.Name }} -n {{ .Release.Namespace }}
+  $ helm get all {{ .Release.Name }} -n {{ .Release.Namespace }}
+
+{{- if .Values.ingress.enabled }}
+
+WordPress is available at:
+{{- range .Values.ingress.hosts }}
+  {{- if .host }}
+  - https://{{ .host }}
+  {{- end }}
+{{- end }}
+
+{{- else if contains "LoadBalancer" .Values.service.type }}
+
+Get the LoadBalancer IP with:
+
+  $ kubectl get svc {{ include "wordpress.fullname" . }} -n {{ .Release.Namespace }}
+
+Then access WordPress at:
+
+  http://<EXTERNAL-IP>
+
+{{- else if contains "ClusterIP" .Values.service.type }}
+
+To access WordPress, run:
+
+  $ kubectl port-forward svc/{{ include "wordpress.fullname" . }} 8080:80 -n {{ .Release.Namespace }}
+
+Then access WordPress at:
+
+  http://localhost:8080
+
+{{- end }}
+
+{{- if .Values.mysql.enabled }}
+
+Database Information:
+  Host: {{ include "wordpress.mysql.fullname" . }}:3306
+  Database: {{ .Values.mysql.auth.database }}
+  Username: {{ .Values.mysql.auth.username }}
+  Password: (stored in secret {{ include "wordpress.mysql.secretName" . }})
+
+To get the MySQL root password:
+
+  $ kubectl get secret {{ include "wordpress.mysql.secretName" . }} -n {{ .Release.Namespace }} -o jsonpath="{.data.mysql-root-password}" | base64 -d
+
+{{- else }}
+
+Using external database at: {{ .Values.externalDatabase.host }}:{{ .Values.externalDatabase.port }}
+
+{{- end }}
+
+Important Security Notes:
+  1. Change default passwords in production!
+  2. Update values in values.yaml:
+     - mysql.auth.rootPassword
+     - mysql.auth.password
+  3. Consider using Kubernetes Secrets for sensitive data
+
+To use WP-CLI, exec into the WordPress container:
+
+  $ kubectl exec -it deployment/{{ include "wordpress.fullname" . }} -n {{ .Release.Namespace }} -c wordpress -- /usr/local/bin/wp --info
+
+For more information, visit:
+  - WordPress Documentation: https://wordpress.org/documentation/
+  - Chart Repository: https://github.com/DavideTriso/wordpress-helm
