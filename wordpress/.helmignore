@@ -21,3 +21,15 @@
 .idea/
 *.tmproj
 .vscode/
+# CI/CD
+.github/
+.gitlab-ci.yml
+.travis.yml
+# Testing
+test/
+tests/
+*.test
+# Documentation
+docs/
+# Example values files (keep in repo but exclude from package)
+values-*.yaml

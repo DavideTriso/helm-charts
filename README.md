@@ -76,7 +76,22 @@ helm install my-wordpress ./wordpress
 
 ### Install with Custom Values
 
-Create a `custom-values.yaml` file:
+The chart includes example values files for common scenarios:
+
+- `values-production.yaml` - Production configuration with HA, autoscaling, and security best practices
+- `values-external-db.yaml` - Configuration for using an external MySQL database
+
+Use an example file as a starting point:
+
+```bash
+# Copy and customize for your needs
+cp wordpress/values-production.yaml my-values.yaml
+# Edit my-values.yaml with your configuration
+# Install with your custom values
+helm install my-wordpress ./wordpress -f my-values.yaml
+```
+
+Or create a custom values file from scratch:
 
 ```yaml
 wordpress:
