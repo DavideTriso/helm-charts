@@ -1,0 +1,27 @@
+# This is a Helm test pod used to verify that your MySQL deployment 
+# is working correctly after installation.
+# Run the test: helm test my-mysql
+apiVersion: v1
+kind: Pod
+metadata:
+  name: "{{ include "mysql.fullname" . }}-test-connection"
+  labels:
+    {{- include "mysql.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+spec:
+  containers:
+    - name: mysql-client
+      image: {{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}
+      command:
+        - sh
+        - -c
+        - |
+          mysql -h {{ include "mysql.fullname" . }} -uroot -p$MYSQL_ROOT_PASSWORD -e "SELECT 1"
+      env:
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: {{ .Values.secret.existingSecret }}
+              key: mysql-root-password
+  restartPolicy: Never

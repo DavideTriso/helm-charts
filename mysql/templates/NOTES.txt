@@ -1,0 +1,23 @@
+MySQL has been deployed successfully!
+
+To connect to your MySQL database:
+
+1. Get the root password:
+
+  export MYSQL_ROOT_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ .Values.secret.existingSecret }} -o jsonpath="{.data.mysql-root-password}" | base64 -d)
+
+2. Connect via port-forward:
+
+  kubectl port-forward --namespace {{ .Release.Namespace }} svc/{{ include "mysql.fullname" . }} 3306:3306 &
+  mysql -h 127.0.0.1 -P 3306 -uroot -p$MYSQL_ROOT_PASSWORD
+
+{{- if .Values.mysql.database }}
+
+Your database "{{ .Values.mysql.database }}" has been created.
+{{- end }}
+
+{{- if .Values.mysql.user }}
+
+A user "{{ .Values.mysql.user }}" has been created with access to the database.
+{{- end }}
+

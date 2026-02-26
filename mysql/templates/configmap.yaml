@@ -1,0 +1,12 @@
+# ConfigMap to customize MySQL configuration.
+{{- if .Values.mysql.config }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "mysql.fullname" . }}
+  labels:
+    {{- include "mysql.labels" . | nindent 4 }}
+data:
+  my.cnf: |
+{{ .Values.mysql.config | indent 4 }}
+{{- end }}
