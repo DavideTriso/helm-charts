@@ -19,18 +19,17 @@ mysql:
   database: "myapp"
   # Optional: Create a user with password
   user: "myappuser"
+  # This is the name of an existing Kubernetes Secret that contains the MySQL root password
+  # and the password for the user if specified. The Secret must have the following keys:
+  # - mysql-root-password
+  # - mysql-password
+  existingSecret: ""
   # MySQL configuration options
   config: |
     [mysqld]
     max_connections=200
     innodb_buffer_pool_size=256M
-
-# Secret configuration (REQUIRED)
-# You must create a Kubernetes Secret with the following keys:
-#   - mysql-root-password (required)
-#   - mysql-password (required if mysql.user is set)
-secret:
-  existingSecret: ""
+    
 
 # Service configuration
 service:

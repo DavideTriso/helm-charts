@@ -22,6 +22,6 @@ spec:
         - name: MYSQL_ROOT_PASSWORD
           valueFrom:
             secretKeyRef:
-              name: {{ .Values.secret.existingSecret }}
+              name: {{ .Values.mysql.existingSecret }}
               key: mysql-root-password
   restartPolicy: Never

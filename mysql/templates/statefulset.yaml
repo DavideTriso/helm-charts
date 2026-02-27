@@ -45,13 +45,13 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           env:
-            {{- if not .Values.secret.existingSecret }}
-            {{- fail "secret.existingSecret is required. Please create a Kubernetes Secret and specify its name." }}
+            {{- if not .Values.mysql.existingSecret }}
+            {{- fail "mysql.existingSecret is required. Please create a Kubernetes Secret and specify its name." }}
             {{- end }}
             - name: MYSQL_ROOT_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.secret.existingSecret }}
+                  name: {{ .Values.mysql.existingSecret }}
                   key: mysql-root-password
             {{- if .Values.mysql.database }}
             - name: MYSQL_DATABASE
@@ -65,7 +65,7 @@ spec:
             - name: MYSQL_PASSWORD
               valueFrom:
                 secretKeyRef:
-                  name: {{ .Values.secret.existingSecret }}
+                  name: {{ .Values.mysql.existingSecret }}
                   key: mysql-password
             {{- end }}
           ports:

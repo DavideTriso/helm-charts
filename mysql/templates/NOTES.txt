@@ -4,7 +4,7 @@ To connect to your MySQL database:
 
 1. Get the root password:
 
-  export MYSQL_ROOT_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ .Values.secret.existingSecret }} -o jsonpath="{.data.mysql-root-password}" | base64 -d)
+  export MYSQL_ROOT_PASSWORD=$(kubectl get secret --namespace {{ .Release.Namespace }} {{ .Values.mysql.existingSecret }} -o jsonpath="{.data.mysql-root-password}" | base64 -d)
 
 2. Connect via port-forward:
 
